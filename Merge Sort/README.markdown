@@ -1,45 +1,50 @@
-# Merge Sort
+# 병합정렬
 
-Goal: Sort an array from low to high (or high to low)
+목표: 오름차순 또는 내림차순으로 배열을 정렬하는 것.
 
-Invented in 1945 by John von Neumann, merge-sort is an efficient algorithm with a best, worst, and average time complexity of **O(n log n)**.
+ 1945년  John von Neumann이 개발했다. 병합정렬은 최고, 최악 그리고, 평균**O(n log n)**의 시간 복잡도를 가진 효율적인 알고리즘이다.
 
-The merge-sort algorithm uses the **divide and conquer** approach which is to divide a big problem into smaller problems and solve them. I think of the merge-sort algorithm as **split first** and **merge after**. 
+병합정렬 알고리즘은 큰문제를 작은문제로 분할하여 해결하는 분할 정복 알고리즘을 사용한다. 즉, 병합정렬 알고리즘은 **분할**한 후 **병합**하는 것이다. 
 
-Assume you need to sort an array of *n* numbers in the right order. The merge-sort algorithm works as follows:
+n개의 숫자의 배열을 순서대로 정렬 한다고 가정하자. 
+병합정렬 알고리즘은 아래와 같이 동작한다:
 
-- Put the numbers in an unsorted pile.
-- Split the pile into two. Now, you have **two unsorted piles** of numbers.
-- Keep splitting the resulting piles until you cannot split anymore. In the end, you will have *n* piles with one number in each pile.
-- Begin to **merge** the piles together by pairing them sequentially. During each merge, put the contents in sorted order. This is fairly easy because each individual pile is already sorted.
+- 정렬되지 않은 더미에 숫자들을 입력한다.
+- 더미를 2개로 나눈다.  ( **2개의 정렬되지 않은 숫자 더미**가 있다.)
+- 더이상 나눌 수 없을 때까지 더미를 계속 나눈다. 마지막에는 각 더미에 숫자 한개만 남게 된다.
+- 순서대로 짝을 지어 더미들을 결합하여 **병합**한다.  병합할 때 마다, 정렬 순서에 따라 숫자들을 넣는다. 이 방법은 각각의 더미들이 이미 정렬 되어 있기 때문에 쉽게 이용할 수 있는 방법이다.
 
-## An example
+## 예제
 
-### Splitting
+### 분할
 
-Assume you are given an array of *n* numbers as`[2, 1, 5, 4, 9]`. This is an unsorted pile. The goal is to keep splitting the pile until you cannot split anymore. 
+ *n* 개의 숫자를 가진 배열 `[2, 1, 5, 4, 9]`이 있다고 하자. 이 배열은 정렬되지 않은 배열이다. 더미를 더 이상 나눌 수  없을 때까지 더미를  계속 나눈다.
 
-First, split the array into two halves: `[2, 1]` and `[5, 4, 9]`. Can you keep splitting them? Yes, you can!
+먼저, 배열을 2개의 배열로 나눈다: `[2, 1]`  그리고  `[5, 4, 9]`.
 
-Focus on the left pile. Split`[2, 1]` into `[2]` and `[1]`. Can you keep splitting them? No. Time to check the other pile.
+좌측 배열 `[2, 1]`을  `[2] `와`[1]`로 나눈다.
 
-Split `[5, 4, 9]` into `[5]` and `[4, 9]`. Unsurprisingly, `[5]` cannot be split anymore, but `[4, 9]` can be split into `[4]` and `[9]`. 
+우측 배열  `[5, 4, 9]` 을 `[5]` 그리고  `[4, 9]`로 나눈다. 배열 `[5]`는 더 이상 나눌 수 없는 배열이다. 하지만,  배열`[4, 9]` 는  `[4]`그리고 `[9]`로 한번 더 나눌 수 있다.
 
-The splitting process ends with the following piles: `[2]` `[1]` `[5]` `[4]` `[9]`. Notice that each pile consists of just one element.
+분할프로세스가 끝나면 아래와 같은 더미들이 남는다: `[2]` `[1]` `[5]` `[4]` `[9]`. 각 더미는 하나의 원소로 구성된다.
 
-### Merging
+### 병합
 
-Now that you have split the array, you should **merge** the piles together **while sorting them**. Remember, the idea is to solve many small problems rather than a big one. For each merge iteration, you must be concerned at merging one pile with another.
+이제 앞서서 분할한 배열을 갖고서 각각의 더미들을 결합하여 병합할 수 있다. 여기서 기억해야 할 것은 병합정렬은 큰 문제 하나가 아니라 여러개의 작은 문제들을 해결해 나가는 전략이라는 것이다. 병합을 반복할 때 마다 중요한 것은 하나의 더미를 다른 더미에 병합한다라는 개념이다.
 
-Given the piles `[2]` `[1]` `[5]` `[4]` `[9]`, the first pass will result in `[1, 2]` and `[4, 5]` and `[9]`. Since `[9]` is the odd one out, you cannot merge it with anything during this pass. 
 
-The next pass will merge `[1, 2]` and `[4, 5]` together. This results in `[1, 2, 4, 5]`, with the `[9]` left out again because it is the odd one out. 
 
-You are left with only two piles and `[9]`, finally gets its chance to merge, resulting in the sorted array as `[1, 2, 4, 5, 9]`. 
+여기  `[2]` `[1]` `[5]` `[4]` `[9]` 가 있다. 1단계로  `[2]`과 `[1]`을 비교 병합 `[5]` 와`[4]` 을 비교 병합한다. 그 결과  `[1, 2]` 과 `[4, 5]`그리고 `[9]`가 된다.   `[9]` 는 하나만 남았기 때문에 , 1단계에서는 어떤 더미와도 병합할 수 없다.
 
-## Top-down implementation
+다음 단계로 `[1, 2]`과 `[4, 5]` 을 병합한다. 그 결과 `[1, 2, 4, 5]` , 또다시`[9]` 만 남았다.
 
-Here's what merge sort may look like in Swift:
+
+
+ 이제 2개의 더미만 남았고(`[1, 2, 4, 5]`그리고`[9]` ),  합병을 하면  결과 배열로`[1, 2, 4, 5, 9]`라는 정렬된 배열이 된다.
+
+## Top-down 구현
+
+Swift로 구현한 병합정렬:
 
 ```swift
 func mergeSort(_ array: [Int]) -> [Int] {
@@ -55,19 +60,15 @@ func mergeSort(_ array: [Int]) -> [Int] {
 }
 ```
 
-A step-by-step explanation of how the code works:
+코드가 어떻게 동작하는지 단계별로 설명하겠다 :
 
-1. If the array is empty or contains a single element, there is no way to split it into smaller pieces. You must just return the array.
+1. 만약 배열이 비어있거나, 원소가 하나 밖에 들어 있지 않다면, 더 이상 더 작은 단위로 나눌 수 없기 때문에 반드시 배열을 return 해야 한다.
+2. middle index를 찾는다.
+3. 이전 단계에서의 middle index를 사용함으로서 좌측 배열(middle index 보다 작은 index를 가진)을 재귀적으로 나눌 수 있다.
+4. 마찬가지로, 우측 배열(middle index 보다 같거나 큰 index를 가진)을 재귀적으로 나눌 수 있다. 
+5. 마지막으로, 모든 값들을 병합하고,  모든 값이 정렬되게 한다.
 
-2. Find the middle index. 
-
-3. Using the middle index from the previous step, recursively split the left side of the array.
-
-4. Also, recursively split the right side of the array.
-
-5. Finally, merge all the values together, making sure that it is always sorted.
-
-Here's the merging algorithm:
+병합 알고리즘:
 
 ```swift
 func merge(leftPile: [Int], rightPile: [Int]) -> [Int] {
@@ -109,57 +110,64 @@ func merge(leftPile: [Int], rightPile: [Int]) -> [Int] {
 }
 ```
 
-This method may look scary, but it is quite straightforward:
+이 방법이 복잡해보일 수 있다. 하지만 아주 단순하다:
 
-1. You need two indexes to keep track of your progress for the two arrays while merging.
+1. 합병 할 때, 두 배열의 진행상황을 확인하기 위해서 2개의 index가 필요하다.
+2. 이 변수가 합병된 배열을 나타낸다. 지금은 배열이 비어있지만, 다른 배열에 있는 원소들을 순서대로 넣어서 완성 될 것이다.
+3. 이 while-loop는 좌측과 우측에 있는 배열의 원소들을 비교해 줄 것이다. 그리고 결과값이 순서대로 정렬되면`orderedPile` 배열에 넣어 줄 것이다. 
+4. 만약 앞에 있는 while-loop에서 빠져 나왔다면, 이것은 `leftPile` 또는 `rightPile`의 원소들이 완전히 `orderedPile`에 병합되었다는 의미이다. 여기서 중요한 것은, 더이상 비교를 하지 않아도 된다는 것이다.  배열에 남아있는 원소들을 더 이상 넣을 수 없을 때까지 넣으면 된다.  
 
-2. This is the merged array. It is empty right now, but you will build it up in subsequent steps by appending elements from the other arrays.
+`merge()`의 동작 예제를 통해서,  우리는 아래와 같은 더미가 될 것이라는 것을 알 수 있다:  `leftPile = [1, 7, 8]` 와 `rightPile = [3, 6, 9]`. 각각의 더미들은 이미 정렬이 되어 있다. 이 더미들은 다음단계에서 더 큰 정렬된 더미로 합병될 것이다:
 
-3. This while-loop will compare the elements from the left and right sides and append them into the `orderedPile` while making sure that the result stays in order.
+```
+leftPile       rightPile       orderedPile
+[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ ]
+  l              r
+```
 
-4. If control exits from the previous while-loop, it means that either the `leftPile` or the `rightPile` has its contents completely merged into the `orderedPile`. At this point, you no longer need to do comparisons. Just append the rest of the contents of the other array until there is no more to append.
+left index는 여기서 `l`로 표현 한다. 현재 포인트는 left pile에서 첫번째 원소에 위치해 있다. `r`로 표현하는 right index에서는  `3`을 가르키고 있다. 그 결과,  `orderedPile`에 추가 한 첫번째 원소는  `1` 이다.  그리고 left index의 `l`은 다음 원소를 가리키게 된다. 
 
-As an example of how `merge()` works, suppose that we have the following piles: `leftPile = [1, 7, 8]` and `rightPile = [3, 6, 9]`. Note that each of these piles is individually sorted already -- that is always true with merge sort. These are merged into one larger sorted pile in the following steps:
+```
+leftPile       rightPile       orderedPile
+[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ 1 ]
+  -->l           r
+```
 
-	leftPile       rightPile       orderedPile
-	[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ ]
-      l              r
 
-The left index, here represented as `l`, points at the first item from the left pile, `1`. The right index, `r`, points at `3`. Therefore, the first item we add to `orderedPile` is `1`. We also move the left index `l` to the next item.
 
-	leftPile       rightPile       orderedPile
-	[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ 1 ]
-      -->l           r
+이제 `l`는  `7` 을 가르키고 있다. 하지만  `r` 은 아직 `3`에 위치해 있다. 값을 더할때 가장 작은 값의 원소를 orderedPile에 추가해야 하기 때문에  `3`을 추가해야 한다. 이제 각각의 배열은 아래와 같은 상태가 되었다:
 
-Now `l` points at `7` but `r` is still at `3`. We add the smallest item to the ordered pile, so that is `3`. The situation is now:
+```
+leftPile       rightPile       orderedPile
+[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ 1, 3 ]
+     l           -->r
+```
 
-	leftPile       rightPile       orderedPile
-	[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ 1, 3 ]
-         l           -->r
+이 과정을 반복한다. 각각의 단계에서, 가장 작은 원소를 `leftPile` 또는 `rightPile` 에서 뽑고 `orderedPile`에 원소를 추가 한다:
 
-This process repeats. At each step, we pick the smallest item from either the `leftPile` or the `rightPile` and add the item into the `orderedPile`:
+```
+leftPile       rightPile       orderedPile
+[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ 1, 3, 6 ]
+     l              -->r
 
-	leftPile       rightPile       orderedPile
-	[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ 1, 3, 6 ]
-         l              -->r
-	
-	leftPile       rightPile       orderedPile
-	[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ 1, 3, 6, 7 ]
-         -->l              r
-	
-	leftPile       rightPile       orderedPile
-	[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ 1, 3, 6, 7, 8 ]
-            -->l           r
+leftPile       rightPile       orderedPile
+[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ 1, 3, 6, 7 ]
+     -->l              r
 
-Now, there are no more items in the left pile. We simply add the remaining items from the right pile, and we are done. The merged pile is `[ 1, 3, 6, 7, 8, 9 ]`. 
+leftPile       rightPile       orderedPile
+[ 1, 7, 8 ]    [ 3, 6, 9 ]     [ 1, 3, 6, 7, 8 ]
+        -->l           r
+```
 
-Notice that, this algorithm is very simple: it moves from left-to-right through the two piles and at every step picks the smallest item. This works because we guarantee that each of the piles is already sorted.
+이제, left pilew에는 더이상 남은 원소가 없다. right pile에 남아있는 원소들을 추가하고 완성한다. 그리고 병합된 더미는  `[ 1, 3, 6, 7, 8, 9 ]`이 된다.
 
-## Bottom-up implementation
+여기서 중요한 것은, 이 알고리즘이 아주 단순하다는 것이다: 이 알고리즘은 2개의 더미에서 좌측에서 우측으로 움직인다. 각 단계에서 가장 작은 원소를 뽑는다. 이 동작은 각 더미가 미리 정렬되어 있게 하기 위해 동작한다.
 
-The implementation of the merge-sort algorithm you have seen so far is called the "top-down" approach because it first splits the array into smaller piles and then merges them. When sorting an array (as opposed to, say, a linked list) you can actually skip the splitting step and immediately start merging the individual array elements. This is called the "bottom-up" approach.
+## Bottom-up 구현
 
-Time to step up the game a little. :-) Here is a complete bottom-up implementation in Swift:
+ 지금까지 살펴 본 병합 정렬 알고리즘 구현은  먼저 배열을 더 작은 더미로 나누고서 병합하기 때문에  하향식(top-down) 접근 이라고 불린다. 실제로 배열이 정렬될 때(linkedlist와 반대로) 쪼개는 단계를 생략하고 바로 각 배열의 원소들을 병합 할 수 있는데, 이것을 바로 상향식(bottom-up)접근 이라고 한다. 
+
+여기 Swift로 구현 된 상향식(bottom-up)접근:
 
 ```swift
 func mergeSortBottomUp<T>(_ a: [T], _ isOrderedBefore: (T, T) -> Bool) -> [T] {
@@ -212,43 +220,59 @@ func mergeSortBottomUp<T>(_ a: [T], _ isOrderedBefore: (T, T) -> Bool) -> [T] {
 }
 ```
 
-It looks a lot more intimidating than the top-down version, but notice that the main body includes the same three `while` loops from `merge()`.
 
-Notable points:
 
-1. The Merge-sort algorithm needs a temporary working array because you cannot merge the left and right piles and at the same time overwrite their contents. Because allocating a new array for each merge is wasteful, we are using two working arrays, and we will switch between them using the value of `d`, which is either 0 or 1. The array `z[d]` is used for reading, and `z[1 - d]` is used for writing. This is called *double-buffering*.
+botton-up 버전이 top-down 버전 보다 어려워 보이지만 `merge()`에 있는  `while`루프 3개와 똑같는 것을 확인 할 수 있다.
 
-2. Conceptually, the bottom-up version works the same way as the top-down version. First, it merges small piles of one element each, then it merges piles of two elements each, then piles of four elements each, and so on. The size of the pile is given by `width`. Initially, `width` is `1` but at the end of each loop iteration, we multiply it by two, so this outer loop determines the size of the piles being merged, and the subarrays to merge become larger in each step.
+주목할점들:
 
-3. The inner loop steps through the piles and merges each pair of piles into a larger one. The result is written in the array given by `z[1 - d]`.
+1.  병합정렬알고리즘은 임시 작업 배열(*temporary working array*) 없이는 좌측과 우측 더미들을 병합 할 수 없고, 동시에 좌측과 우측 더미의 원소들을 덮어 쓸 수도 없기 때문에 임시로 작업할 수 있는 배열(*temporary working array*) 이 필요하다. 이는 병합을 할때마다 새로운 배열을 할당하는 것은 낭비이기 때문에, `d`의 값을 0 또는 1로 값을 넣음으로서  2개의 임시 작업 배열을 전환해 가며 이용한다. `z[d]`는 읽을 때 사용되고,  `z[1 - d]` 는 쓸 때(*writing*) 사용된다. 이것을 *double-buffering* 이라고 한다.  
 
-4. This is the same logic as in the top-down version. The main difference is that we're using double-buffering, so values are read from `z[d]` and written into `z[1 - d]`. It also uses an `isOrderedBefore` function to compare the elements rather than just `<`, so this merge-sort algorithm is generic, and you can use it to sort any kind of object you want.
+   ​
 
-5. At this point, the piles of size `width` from array `z[d]` have been merged into larger piles of size `width * 2` in array `z[1 - d]`. Here, we swap the active array, so that in the next step we'll read from the new piles we have just created.
+2. 개념적으로 상향식( bottom-up) 버전은 하향식(top-down) 버전과 똑같이 동작한다. 첫번째 단계에서, 각각 원소 1개로 이루어진 더미들을 병합한다. 그리고서 각각 2개의 원소로 구성된 더미들을 병합한다. 그리고 각각 4개의 원소로 구성된 더미들을 병합한다. 이런식으로 여러번 반복한다. 더미의 크기는  `width`가 나타낸다. 처음에  `width`는 `1`로 초기화되지만 루프반복이 끝나는 시점에는 2배가 되어있다. 그래서 바깥 루프는 병합된 더미의 크기가 된다. 그리고 각 단계를 거쳐 병합 시 사용하는 부분배열의 크기는 점점 더 커진다.    
 
-This function is generic, so you can use it to sort any type you desire, as long as you provide a proper `isOrderedBefore` closure to compare the elements.
+3. 안쪽 루프는 더미를 통해 단계별로 동작하고 각 쌍의 더미들을 하나로 병합한다. 그 결과는 `z[1 - d]`배열을 이용해 기록 한다. 
 
-Example of how to use it:
+   ​
 
-```swift
+4. 이 부분은 하향식 버전과 같은 로직이다. 다른 점은 여기서 double-buffering을 사용했다는 것이다. 그래서 값이 `z[d]`에 의해 읽혀지고, `z[1 - d]`에 의해 기록된다. 그리고  `<`이 아닌 원소들을 비교하는 기능의 `isOrderedBefore`함수를 사용한다.(그래서 병합정렬 알고리즘이 제네릭 이다.) 그리고 어떤 종류의 객체라도 정렬에 사용할 수 있다.
+
+   ​
+
+5. 여기서, 배열 `z[d]`의  `width` 크기의 더비는 배열 `z[1 - d]`에서의  `width * 2` 사이즈의 더비로 병합된다.
+
+   ​
+
+이 기능은 제네릭이다. 그래서 원소들을 비교 할수 있는 제대로된`isOrderedBefore`closure만 있다면 이것을 이용하여 원하는 어떤 타입이든 정렬이 가능하다.
+
+예제 :
+
+```
 let array = [2, 1, 5, 4, 9]
 mergeSortBottomUp(array, <)   // [1, 2, 4, 5, 9]
 ```
 
-## Performance
+## 실행
 
-The speed of the merge-sort algorithm is dependent on the size of the array it needs to sort. The larger the array, the more work it needs to do. 
+병합정렬의 속도는 정렬할 필요가 있는 배열의 크기에 의해 결정된다. 배열의 사이즈가 클수록 해야될 일이 더 많아진다. 
 
-Whether or not the initial array is sorted already doesnot affect the speed of the merge-sort algorithm since you will be doing the same amount splits and comparisons regardless of the initial order of the elements.
+제일 처음 배열이 이미 정렬되어 있던 안되어 있던 병합정렬알고리즘의 속도에는 영향을 주지않는다. 왜냐하면 똑같은 양을 나눌 것이고 배열에 제일 처음순서에 상관없이 비교할 것이기 때문이다.
 
-Therefore, the time complexity for the best, worst, and average case will always be **O(n log n)**. 
+그 결과, 최고, 최악, 평균 시간복잡도는 항상 **O(n log n)**이 된다.
 
-A disadvantage of the merge-sort algorithm is that it needs a temporary "working" array equal in size to the array being sorted. It is not an **in-place** sort, unlike for example [quicksort](../Quicksort/).
+병합정령 알고리증의 단점은 정렬되고 있는 배열과 같은 사이즈의 일시적으로 작업할 배열이 필요한 것이다. 이것은 [퀵정렬](https://github.com/gyoungeunbae/swift-algorithm-club-kor/tree/master/QuickSort) 예제와 달리 **제자리**정렬이 아니다.
 
-Most implementations of the merge-sort algorithm produce a **stable** sort. This means that array elements that have identical sort keys will stay in the same order relative to each other after sorting. This is not important for simple values such as numbers or strings, but it can be an issue when sorting more complex objects.
 
-## See also
 
-[Merge sort on Wikipedia](https://en.wikipedia.org/wiki/Merge_sort)
+병합정렬알고리즘에 대한 대부분의구현은 **안정적인**정렬로 만들어진다. 이것은 동일한 정렬키들을 가진 배열요소들이 각각 같은 순서에서 정렬이 될때까지 기다리게 된다는 의미이다.
+
+이것은 단순한 값(숫자 나 문자열과 같은)에서는 중요한 문제가 아니지만 더 복잡한 객체들을 정렬할 때 문제가 될 수도 있다.
+
+## 추가
+
+[병합정렬 on Wikipedia](https://ko.wikipedia.org/wiki/%ED%95%A9%EB%B3%91_%EC%A0%95%EB%A0%AC)
 
 *Written by Kelvin Lau. Additions by Matthijs Hollemans.*
+
+*Translated from English into Korean by GyoungEun Bae.*
