@@ -96,9 +96,9 @@ equal:   [ 2 ]
 greater: [ 3, 5 ]
 ```
 
-Note that here it would have been better to pick `3` as the pivot -- we would have been done sooner. But now we have to recurse into the `greater` array again to make sure it is sorted. This is why picking a good pivot is important. When you pick too many "bad" pivots, quicksort actually becomes really slow. More on that below.
+여기서 하나만 짚고 넘어가겠다. 사실, 피벗으로 `3`을 선택하는 것이 더 낫다. 더 빨리 끝날테니. 그러나 지금은 `greater`배열에서 재귀를 다시 돌아야 한다. 확실히 정렬되도록 해야하기 때문이다. 여기서 좋은 피벗을 선택하는 것이 왜 중요한지 알 수 있다. 실제로 "나쁜" 피벗을 너무 많이 선택하면, 퀵정렬은 매우 느려진다. 
 
-When we partition the `greater` subarray, we find:
+`greater` subarray를 나누면 아래와 같은 결과를 얻을 수 있다 :
 
 ```swift
 less:    [ 3 ]
@@ -106,33 +106,32 @@ equal:   [ 5 ]
 greater: [ ]
 ```
 
-And now we're done at this level of the recursion because we can't split up the arrays any further.
+그러면 지금 레벨에서 재귀는 끝난다. 왜냐면 배열을 더이상 쪼갤 수 없기 때문이다.
 
-This process repeats until all the subarrays have been sorted. In a picture:
+이러한 처리과정을 모든 subarray들이 정렬될때까지 반복하면 된다. 그림에서 :
 
 ![Example](Images/Example.png)
 
-Now if you read the colored boxes from left to right, you get the sorted array:
+왼쪽에서 오른쪽 방향으로 색칠된 박스만 보면, 정렬이 완료된 배열을 읽어낼 수 있을 것이다.
 
 ```swift
 [ -1, 0, 1, 2, 3, 5, 8, 8, 9, 10, 14, 26, 27 ]
 ```
+여기에선 `8`이 좋은 초기 피벗임을 알 수 있는데, 그 이유는 정렬이 완료된 배열의 중간값 또한 `8`이기 때문이다.
 
-This shows that `8` was a good initial pivot because it appears in the middle of the sorted array too.
+지금까지의 설명들이 퀵정렬의 기본원리를 이해하는데 많은 도움이 됐기를 바란다. 그러나, 지금 버전의 퀵정렬이 그렇게 빠르지는 않다. 왜냐하면, 같은 배열에서 `filter()`를 세번이나 사용하고 있기 때문. 더 효율적으로 배열을 쪼개는 방법이 있다.
 
-I hope this makes the basic principle clear of how quicksort works. Unfortunately, this version of quicksort isn't very quick, because we `filter()` the same array three times. There are more clever ways to split up the array.
+## 분할하기
 
-## Partitioning
+피벗 주변의 배열을 쪼개는 것을 분할(partitioning)이라고 부른다. 분할 방법은 여러가지이지만, 몇 가지만 소개하겠다.
 
-Dividing the array around the pivot is called *partitioning* and there are a few different partitioning schemes.
-
-If the array is,
+배열을 아래처럼 가정하겠다 :
 
 ```swift
 [ 10, 0, 3, 9, 2, 14, 8, 27, 1, 5, 8, -1, 26 ]
 ```
 
-and we choose the middle element `8` as a pivot then after partitioning the array will look like this:
+그리고 중간값 `8`을 피벗으로 고르겠다. 이 상태에서 분할을 하고 나면 배열은 아래처럼 될 것이다 :
 
 ```swift
 [ 0, 3, 2, 1, 5, -1, 8, 8, 10, 9, 14, 27, 26 ]
@@ -140,21 +139,20 @@ and we choose the middle element `8` as a pivot then after partitioning the arra
   all elements < 8         all elements > 8
 ```
 
-The key thing to realize is that after partitioning the pivot element is in its final sorted place already. The rest of the numbers are not sorted yet, they are simply partitioned around the pivot value. Quicksort partitions the array many times over, until all the values are in their final places.
+여기서 알 수 있는 중요한 사실은 분할 후에 피벗 원소가 이미 정렬이 완료된 위치에 놓인다는 것이다. 나머지 원소들은 아직 정렬되지 않은 채, 단순히 피벗 원소를 기준으로 나뉘었다. 퀵정렬은 모든 값들이 제 자리를 찾을 때까지 여러번 반복해서 배열을 분할한다. 
 
-There is no guarantee that partitioning keeps the elements in the same relative order, so after partitioning around pivot `8` you could also end up with something like this:
+분할된 공간안에서, 원소들 간의 상대적인 순서가 달라질 수도 있다. 예를들어, `8`을 피벗으로 선택해 분할한 후 다음과 같은 배열은 아래와 같을 수 있다는 것이다 :
 
 ```swift
 [ 3, 0, 5, 2, -1, 1, 8, 8, 14, 26, 10, 27, 9 ]
 ```
+분할(partioning)이 보장하는 건, 피벗 왼쪽의 원소들은 모두 피벗보다 작다는 것과 피벗 오른쪽의 원소들은 모두 피벗보다 크다는 것 뿐이다. 왜냐하면 분할하기가 원소들의 원래 순서를 바꿀수 있고, 퀵정렬 자체가 [merge sort](../Merge%20Sort/)처럼 "안정적인" 정렬방식을 사용하고 있지 않기 때문이다. 대부분의 경우 이것이 큰 문제가 되진 않는다.
 
-The only guarantee is that to the left of the pivot are all the smaller elements and to the right are all the larger elements. Because partitioning can change the original order of equal elements, quicksort does not produce a "stable" sort (unlike [merge sort](../Merge%20Sort/), for example). Most of the time that's not a big deal.
+# Lomuto의 분할 알고리즘
 
-## Lomuto's partitioning scheme
+퀵정렬의 첫번째 예제는, 분할이 Swift의 filter() 함수를 세번 호출해서 완료됨을 보였다. 이 방법은 그리 효율적이진 않다. 그래서 지금부터는 조금 더 똑똑한 분할알고리즘에 대해 살펴보겠다. 원래 배열을 조금 변경한 예제로 살펴보자.
 
-In the first example of quicksort I showed you, partitioning was done by calling Swift's `filter()` function three times. That is not very efficient. So let's look at a smarter partitioning algorithm that works *in place*, i.e. by modifying the original array.
-
-Here's an implementation of Lomuto's partitioning scheme in Swift:
+Lomuto의 분할 알고리즘을 Swift로 구현한 예제 :
 
 ```swift
 func partitionLomuto<T: Comparable>(_ a: inout [T], low: Int, high: Int) -> Int {
@@ -173,7 +171,7 @@ func partitionLomuto<T: Comparable>(_ a: inout [T], low: Int, high: Int) -> Int 
 }
 ```
 
-To test this in a playground, do:
+playground에서 테스트 해보려면 :
 
 ```swift
 var list = [ 10, 0, 3, 9, 2, 14, 26, 27, 1, 5, 8, -1, 8 ]
@@ -181,46 +179,46 @@ let p = partitionLomuto(&list, low: 0, high: list.count - 1)
 list  // show the results
 ```
 
-Note that `list` needs to be a `var` because `partitionLomuto()` directly changes the contents of the array (it is passed as an `inout` parameter). That is much more efficient than allocating a new array object.
+하나만 짚고 넘어가겠다. 여기서 `list` 같은 경우는 `var`로 선언해주었는데, `partitionLomuto()`가 배열의 내용물을 `input`파라미터로 전달받아 곧바로 변경할 수 있도록 하기 위함이다. 이 방법이 새로 배열객체를 할당하는 것보다 더 효율적인 방법이다.
 
-The `low` and `high` parameters are necessary because when this is used inside quicksort, you don't always want to (re)partition the entire array, only a limited range that becomes smaller and smaller.
+다음으로, `low`와 `high`파라미터가 필요하다. 왜냐하면, 이것을 퀵정렬 내부에서 적절히 사용하면, 전체 배열을 (재)분할할 필요가 없기 때문이다. 이 파라미터들로 (재)분할의 범위를 제한하고, 점점 더 좁아지게 한다.
 
-Previously we used the middle array element as the pivot but it's important to realize that the Lomuto algorithm always uses the *last* element, `a[high]`, for the pivot. Because we've been pivoting around `8` all this time, I swapped the positions of `8` and `26` in the example so that `8` is at the end of the array and is used as the pivot value here too.
+이전에 우리는 피벗을 배열의 중간값으로 선택했지만, Lomuto 알고리즘에서는 항상 마지막 원소 즉, `a[high]`를 피벗으로 사용한다는 것을 먼저 알아두자. 왜냐면 우리가 `8`근처를 피벗으로 선택하는 것에 익숙해져 있기 때문이다. 제가 이번 예제에서는 일부러 `8`의 위치를 배열 마지막 원소인 `26`과 바꾸었습니다.  `8`을 배열의 마지막에 위치시켜서 이번에도 `8`을 피벗으로 사용하기 위함이다.
 
-After partitioning, the array looks like this:
+분할이 끝나고 나면, 배열은 아마 이런 모습일 것이다 :
 
 ```swift
 [ 0, 3, 2, 1, 5, 8, -1, 8, 9, 10, 14, 26, 27 ]
                         *
 ```
 
-The variable `p` contains the return value of the call to `partitionLomuto()` and is 7. This is the index of the pivot element in the new array (marked with a star).
+변수 `p`에는 `partitionLomuto()`가 반환한 값인 7이 담겨있을 것이다. 7은 피벗원소의 배열 인덱스이다. ( *로 표시된 것 )
 
-The left partition goes from 0 to `p-1` and is `[ 0, 3, 2, 1, 5, 8, -1 ]`. The right partition goes from `p+1` to the end, and is `[ 9, 10, 14, 26, 27 ]` (the fact that the right partition is already sorted is a coincidence).
+왼쪽 파티션은 0부터 `p-1`까지인 `[ 0, 3, 2, 1, 5, 8, -1 ]` 입니다. 오른쪽 파티션은 `p+1`부터 끝까지고, `[ 9, 10, 14, 26, 27 ]. ( 오른쪽 파티션이 이미 정렬되어있는건 우연이다. )
 
-You may notice something interesting... The value `8` occurs more than once in the array. One of those `8`s did not end up neatly in the middle but somewhere in the left partition. That's a small downside of the Lomuto algorithm as it makes quicksort slower if there are a lot of duplicate elements.
+여기서 흥미로운 부분 있다.. 배열에서 `8`이 한번 이상 보이는 것입니다. 이러한 `8`들 중 결국 하나는 깔끔하게 중간으로 가진 않겠지만, 왼쪽 파티션 어딘가에 위치하게 된다. 이러한 점 때문에 Lumoto 알고리즘은, 원소들이 많이 중복되면 퀵정렬 속도가 느려지는 약점이 있다.
 
-So how does the Lomuto algorithm actually work? The magic happens in the `for` loop. This loop divides the array into four regions:
+그러면 Lumoto 알고리즘은 어떻게 작동하는 것일까? `for`루프에서 마법같은 일이 벌어진다. 이 루프는 배열을 4부분으로 나눈다.
 
-1. `a[low...i]` contains all values <= pivot
-2. `a[i+1...j-1]` contains all values > pivot
-3. `a[j...high-1]` are values we haven't looked at yet
-4. `a[high]` is the pivot value
+1. pivot 이하의 모든 원소를 담고 있는`a[low...i]` 
+2. pivot 초과의 모든 원소를 담고있는 `a[i+1...j-1]`
+3. 우리가 아직 보지 못한 값들인 `a[j...high-1]`
+4. 피벗 값인 `a[high]`
 
-In ASCII art the array is divided up like this:
+배열의 나누어짐을 ASCII art로 표현해보았다 :
 
 ```swift
 [ values <= pivot | values > pivot | not looked at yet | pivot ]
   low           i   i+1        j-1   j          high-1   high
 ```
 
-The loop looks at each element from `low` to `high-1` in turn. If the value of the current element is less than or equal to the pivot, it is moved into the first region using a swap.
+이 루프는 `low`에서 `high-1`까지 각 원소를 순차적으로 살핀다. 만약에 현재 보고 있는 값이 피벗 이하면, swap을 사용해서 1번 영역으로 이동시킨다.
 
-> **Note:** In Swift, the notation `(x, y) = (y, x)` is a convenient way to perform a swap between the values of `x` and `y`. You can also write `swap(&x, &y)`.
+> **Note** :  `(x, y) = (y, x)`문법은 스위프트에서 `x`와 `y`의 값을 서로 교환하는 편리한 방법 중 하나이다. 꼭 이 방법만 있는건 아니고, `swap(&x, &y)`를 사용할 때도 있다.
 
-After the loop is over, the pivot is still the last element in the array. So we swap it with the first element that is greater than the pivot. Now the pivot sits between the <= and > regions and the array is properly partitioned.
+루프가 종료되고 나서, 피벗은 여전히 배열의 마지막에 위치하고 있다. 그러니 피벗보다 큰 원소인 첫번째 원소와 피벗을 교환한다. 이제 피벗은 <= 과 > 영역 사이에 자리를 잡게 됐고, 배열도 적절히 분할됐다.
 
-Let's step through the example. The array we're starting with is:
+이 과정을 예제를 통해 자세히 보겠다. 아래의 배열에서부터 시작한다 :
 
 ```swift
 [| 10, 0, 3, 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
@@ -229,9 +227,9 @@ Let's step through the example. The array we're starting with is:
    j
 ```
 
-Initially, the "not looked at" region stretches from index 0 to 11. The pivot is at index 12. The "values <= pivot" and "values > pivot" regions are empty, because we haven't looked at any values yet.
+초기화 시, "아직 보지 못함" 영역의 인덱스를 0부터 11까지로 늘려놓았다.  피벗은 인덱스 12에 위치하고 있다. "값들 <= 피벗" 과 "값들 > 피벗" 영역엔 아무것도 없다. 왜냐하면 아직 어떠한 값도 확인하지 않았기 때문이다.
 
-Look at the first value, `10`. Is this smaller than the pivot? No, skip to the next element.	  
+첫번째 값은 `10`이다. 피벗보다 작은가? 아니다. 그러니 다음 원소로 넘어간다.
 
 ```swift
 [| 10 | 0, 3, 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
@@ -240,9 +238,9 @@ Look at the first value, `10`. Is this smaller than the pivot? No, skip to the n
        j
 ```
 
-Now the "not looked at" region goes from index 1 to 11, the "values > pivot" region contains the number `10`, and "values <= pivot" is still empty.
+이제 "아직 보지 못함" 영역은 index가 1부터 11까지로 바뀌었다. "값들 > 피벗" 영역은 `10`을 담고 있으며, "값들 <= 피벗"에는 아직 아무것도 없다.
 
-Look at the second value, `0`. Is this smaller than the pivot? Yes, so swap `10` with `0` and move `i` ahead by one.
+두번째 값인 `0`을 보자. 피벗보다 작은가? 그렇다. 따라서 `10`과 `0`을 교환하고, `i`를 앞으로 한칸 움직인다.
 
 ```swift
 [ 0 | 10 | 3, 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
@@ -251,9 +249,9 @@ Look at the second value, `0`. Is this smaller than the pivot? Yes, so swap `10`
            j
 ```
 
-Now "not looked at" goes from index 2 to 11, "values > pivot" still contains `10`, and "values <= pivot" contains the number `0`.
+이제 "아직 보지 못함" 영역은 index가 2부터 11까지로 바뀌었다. "값들 > 피벗" 영역은 여전히 `10`을 담고 있으며, "값들 <= 피벗"에는 `0`이 담겨있다.
 
-Look at the third value, `3`. This is smaller than the pivot, so swap it with `10` to get:
+세번째 값인 `3`을 보자. `3`은 피벗보다 작으니, `10`과 자리를 바꾼다.
 
 ```swift
 [ 0, 3 | 10 | 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
@@ -262,7 +260,7 @@ Look at the third value, `3`. This is smaller than the pivot, so swap it with `1
              j
 ```
 
-The "values <= pivot" region is now `[ 0, 3 ]`. Let's do one more... `9` is greater than the pivot, so simply skip ahead:
+"값들 <= 피벗" 영역은 이제 `[0, 3]` 이다. 한번 더 해보겠다.. `9`는 피벗보다 크니, 그냥 넘어간다 :
 
 ```swift
 [ 0, 3 | 10, 9 | 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
@@ -271,7 +269,7 @@ The "values <= pivot" region is now `[ 0, 3 ]`. Let's do one more... `9` is grea
                  j
 ```
 
-Now the "values > pivot" region contains `[ 10, 9 ]`. If we keep going this way, then eventually we end up with:
+이제 "값들 > 피벗" 영역은 `[10, 9]`를 담고 있다. 이런 식으로 계속해서 해나가면, 아래와 같은 결과를 얻게 된다 :
 
 ```swift
 [ 0, 3, 2, 1, 5, 8, -1 | 27, 9, 10, 14, 26 | 8 ]
@@ -279,7 +277,7 @@ Now the "values > pivot" region contains `[ 10, 9 ]`. If we keep going this way,
                          i                   j
 ```
 
-The final thing to do is to put the pivot into place by swapping `a[i]` with `a[high]`:
+마지막으로 할 일은, `a[i]`와 `a[high]`를 교환하여 피벗을 제 위치에 가져다 놓는것이다 :
 
 ```swift
 [ 0, 3, 2, 1, 5, 8, -1 | 8 | 9, 10, 14, 26, 27 ]
@@ -287,11 +285,11 @@ The final thing to do is to put the pivot into place by swapping `a[i]` with `a[
                          i                  j
 ```
 
-And we return `i`, the index of the pivot element.
+그리고 피벗의 인덱스인 `i`를 리턴하는 것이다.
 
-> **Note:** If you're still not entirely clear on how the algorithm works, I suggest you play with this in the playground to see exactly how the loop creates these four regions.
+> **Note** : 만약 아직 알고리즘이 전체적으로 어떻게 동작하는지 이해가 잘 안된다면, 이걸 playground에서 동작시켜보고, 루프가 4가지 영역을 어떻게 만들어내는지 눈으로 확인하는 것이 도움될 것이다.
 
-Let's use this partitioning scheme to build quicksort. Here's the code:
+퀵정렬을 만들기 위해 이 분할 알고리즘을 사용해보자 :
 
 ```swift
 func quicksortLomuto<T: Comparable>(_ a: inout [T], low: Int, high: Int) {
@@ -303,22 +301,22 @@ func quicksortLomuto<T: Comparable>(_ a: inout [T], low: Int, high: Int) {
 }
 ```
 
-This is now super simple. We first call `partitionLomuto()` to reorder the array around the pivot (which is always the last element from the array). And then we call `quicksortLomuto()` recursively to sort the left and right partitions.
+정말 간단하다. 제일 처음에 `partitionLomuto()`를 호출해서 피벗을 기준으로 배열을 재정렬한다.(피벗은 항상 배열의 가장 마지막 원소) 그런 다음 `quicksortLomuto()`를 재귀적으로 호출해서 왼쪽과 오른쪽 파티션을 정렬한다.
 
-Try it out:
+실습 :
 
 ```swift
 var list = [ 10, 0, 3, 9, 2, 14, 26, 27, 1, 5, 8, -1, 8 ]
 quicksortLomuto(&list, low: 0, high: list.count - 1)
 ```
 
-Lomuto's isn't the only partitioning scheme but it's probably the easiest to understand. It's not as efficient as Hoare's scheme, which requires fewer swap operations.
+Lomuto의 것이 유일한 분할방법은 아니지만, 가장 이해하기 쉬울 것이다. Lomuto 보다 효율적인 Hoare의 알고리즘은, swap 연산을 더 적게 사용한다.
 
-## Hoare's partitioning scheme
+## Hoare의 분할 알고리즘
 
-This partitioning scheme is by Hoare, the inventor of quicksort.
+이 알고리즘은 퀵정렬의 발명가인 Hoare의 분할 방법이다.
 
-Here is the code:
+코드는 이렇다 :
 
 ```Swift
 func partitionHoare<T: Comparable>(_ a: inout [T], low: Int, high: Int) -> Int {
@@ -339,7 +337,7 @@ func partitionHoare<T: Comparable>(_ a: inout [T], low: Int, high: Int) -> Int {
 }
 ```
 
-To test this in a playground, do:
+playground에서 아래 코드를 테스트 해보자 :
 
 ```swift
 var list = [ 8, 0, 3, 9, 2, 14, 10, 27, 1, 5, 8, -1, 26 ]
@@ -347,21 +345,20 @@ let p = partitionHoare(&list, low: 0, high: list.count - 1)
 list  // show the results
 ```
 
-Note that with Hoare's scheme, the pivot is always expected to be the *first* element in the array, `a[low]`. Again, we're using `8` as the pivot element.
+Hoare의 알고리즘에 관해 한가지 짚고 넘어가자면, 피벗은 항상 배열의 첫번째 원소 즉, `a[low]`이길 기대한다는 것이다. 그러면, 우리도 이것을 피벗으로 사용하겠다.
 
-The result is:
+결과 :
 
 ```swift
 [ -1, 0, 3, 8, 2, 5, 1, 27, 10, 14, 9, 8, 26 ]
 ```
+이번에는 피벗이 전혀 중간에 있지 않다는 것에 유의해야 한다. Lomuto의 알고리즘과 달리, 반환 값이 반드시 새로운 배열에 있는 피벗의 인덱스일 필요는 없다.
 
-Note that this time the pivot isn't in the middle at all. Unlike with Lomuto's scheme, the return value is not necessarily the index of the pivot element in the new array.
+대신에, 배열은 `[low...p]` 와 `[p+1...high]`영역으로 나뉜다. 여기서, 반환 값 `p`는 6이다, 그래서 두 파티션은 `[ -1, 0, 3, 8, 2, 5, 1 ]` 와 `[ 27, 10, 14, 9, 8, 26 ]`이 된다.
 
-Instead, the array is partitioned into the regions `[low...p]` and `[p+1...high]`. Here, the return value `p` is 6, so the two partitions are `[ -1, 0, 3, 8, 2, 5, 1 ]` and `[ 27, 10, 14, 9, 8, 26 ]`.
+피벗은 두 파티션 중 하나의 어딘가에 위치하게 된다. 그러나 알고리즘 자체는 둘 중 어디에 피벗이 있는 지 얘기해주지 않는다. 만약 피벗값이 한번 이상 발생한다면, 몇몇 값들이 왼쪽 파티션에 나타날 것이고 나머지들이 오른쪽파티션에 나타날 것이다.
 
-The pivot is placed somewhere inside one of the two partitions, but the algorithm doesn't tell you which one or where. If the pivot value occurs more than once, then some instances may appear in the left partition and others may appear in the right partition.
-
-Because of these differences, the implementation of Hoare's quicksort is slightly different:
+이러한 차이점 때문에 Hoare의 퀵정렬 구현도 약간 달라진다 :
 
 ```swift
 func quicksortHoare<T: Comparable>(_ a: inout [T], low: Int, high: Int) {
@@ -373,52 +370,52 @@ func quicksortHoare<T: Comparable>(_ a: inout [T], low: Int, high: Int) {
 }
 ```
 
-I'll leave it as an exercise for the reader to figure out exactly how Hoare's partitioning scheme works. :-)
+독자가 Hoare의 분할 알고리즘의 동작방식을 정확히 이해하도록 연습문제로 남겨놓겠다. :-)
 
-## Picking a good pivot
+# 좋은 피벗을 선택하기
 
-Lomuto's partitioning scheme always chooses the last array element for the pivot. Hoare's scheme uses the first element. But there is no guarantee that these pivots are any good.
+Lomuto의 분할 알고리즘은 항상 배열의 마지막 원소를 피벗으로 선택했다. Hoare의 알고리즘은 첫번째 원소를 사용한다. 그러나 이런 방법들은 좋은 피벗을 선택하는 방법과는 거리가 멀다.
 
-Here is what happens when you pick a bad value for the pivot. Let's say the array is,
+나쁜 피벗을 선택하였을 때 발생하는 일을 살펴보겠다. 아래의 배열을 생각해보자 :
 
 ```swift
 [ 7, 6, 5, 4, 3, 2, 1 ]
 ```
 
-and we're using Lomuto's scheme. The pivot is the last element, `1`. After pivoting, we have the following arrays:
+그리고 우리는 Lomuto의 알고리즘을 사용한다. 피벗은 마지막 원소인 `1`이다. 피벗을 고르는 일(pivoting)을 마치고 나면, 우리는 다음과 같은 배열을 얻게 된다 :
 
 ```swift
-   less than pivot: [ ]
-    equal to pivot: [ 1 ]
-greater than pivot: [ 7, 6, 5, 4, 3, 2 ]
+피벗보다 작음: [ ]
+피벗과 같음  : [ 1 ]
+피벗보다 큼  : [ 7, 6, 5, 4, 3, 2 ]
 ```
 
-Now recursively partition the "greater than" subarray and get:
+이제 재귀적으로 "피벗보다 큰" subarray를 분할한다 :
 
 ```swift
-   less than pivot: [ ]
-    equal to pivot: [ 2 ]
-greater than pivot: [ 7, 6, 5, 4, 3 ]
+피벗보다 작음: [ ]
+피벗과 같음  : [ 2 ]
+피벗보다 큼  : [ 7, 6, 5, 4, 3 ]
 ```
 
-And again:
+그리고 다시하면 :
 
 ```swift
-   less than pivot: [ ]
-    equal to pivot: [ 3 ]
-greater than pivot: [ 7, 6, 5, 4 ]
+피벗보다 작음: [ ]
+피벗과 같음  : [ 3 ]
+피벗보다 큼  : [ 7, 6, 5, 4 ]
 ```
 
-And so on...
+그리고 나머지...
 
-That's no good, because this pretty much reduces quicksort to the much slower insertion sort. For quicksort to be efficient, it needs to split the array into roughly two halves.
+이건 좋지 않다. 왜냐하면 이것이 퀵정렬의 성능을 대폭 낮추어 삽입 정렬보다도 더 느리기 때문이다. 퀵정렬이 더 효율적이기 위해선, 두 배열을 반으로 쪼개는 것이 필요하다.
 
-The optimal pivot for this example would have been `4`, so we'd get:
+이 예제에서 최적의 피벗은 `4`이므로, 이것을 택했다면 아래처럼 얻게 된다 :
 
 ```swift
-   less than pivot: [ 3, 2, 1 ]
-    equal to pivot: [ 4 ]
-greater than pivot: [ 7, 6, 5 ]
+피벗보다 작음: [ 3, 2, 1 ]
+피벗과 같음  : [ 4 ]
+피벗보다 큼  : [ 7, 6, 5 ]
 ```
 
 You might think this means we should always choose the middle element rather than the first or the last, but imagine what happens in the following situation:
