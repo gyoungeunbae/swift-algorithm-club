@@ -1,10 +1,10 @@
-# Quicksort
+# 퀵정렬
 
-Goal: Sort an array from low to high (or high to low).
+목표 : 한 배열을 오름차순 (또는 내림차순) 으로 정렬.
 
-Quicksort is one of the most famous algorithms in history. It was invented way back in 1959 by Tony Hoare, at a time when recursion was still a fairly nebulous concept.
+퀵정렬은 역사적으로 가장 유명한 알고리즘 중 하나이다. 퀵정렬은 '재귀' 개념이 불투명하던 시기인 1959년, Tony Hoare에 의해 발명됐다.
 
-Here's an implementation in Swift that should be easy to understand:
+아래는 이해하기 쉽도록 구현한 Swift 코드이다 :
 
 ```swift
 func quicksort<T: Comparable>(_ a: [T]) -> [T] {
@@ -19,74 +19,92 @@ func quicksort<T: Comparable>(_ a: [T]) -> [T] {
 }
 ```
 
-Put this code in a playground and test it like so:
+아래 코드를 main 메소드에서 테스트한다 :
 
 ```swift
 let list = [ 10, 0, 3, 9, 2, 14, 8, 27, 1, 5, 8, -1, 26 ]
 quicksort(list)
 ```
 
-Here's how it works. When given an array, `quicksort()` splits it up into three parts based on a "pivot" variable. Here, the pivot is taken to be the element in the middle of the array (later on you'll see other ways to choose the pivot).
+다음은 작동 방식이다. 배열이 주어지면, `quicksort()`는 "pivot" 변수에 따라 배열은 세 부분으로 나눈다. 여기서, 배열의 가운데 요소를 pivot으로 사용한다. ( 피벗을 선택하는 다른 방법은 나중에 살펴보겠다. )
 
-All the elements less than the pivot go into a new array called `less`. All the elements equal to the pivot go into the `equal` array. And you guessed it, all elements greater than the pivot go into the third array, `greater`. This is why the generic type `T` must be `Comparable`, so we can compare the elements with `<`, `==`, and `>`.
+pivot보다 작은 모든 원소들은 새로운 배열 `less`로 이동시킨다. pivot과 같은 모든 원소들은 `equal`배열에 넣는다. 눈치 챘을지 모르지만, pivot 보다 큰 원소들은 세번째 배열 `greater`에 넣는다.  참고로 Java는 연산자 오버로딩을 지원하지 않는다. 객체를 정렬하는 방법은 나중에 살펴본다. 
 
-Once we have these three arrays, `quicksort()` recursively sorts the `less` array and the `greater` array, then glues those sorted subarrays back together with the `equal` array to get the final result.
+일단 세가지 배열을 구하고 나면, quicksort()는 재귀적으로 `less`배열과 `greater`배열을 정렬한다. 그리고나서, 정렬된 두 하위 배열(sub-array)을 `equal`배열과 붙여 최종결과를 얻어낸다.
 
-## An example
+## 예제
 
-Let's walk through the example. The array is initially:
+예제를 살펴보겠다. 배열은 다음과 같이 초기화 하였다 :
 
-	[ 10, 0, 3, 9, 2, 14, 8, 27, 1, 5, 8, -1, 26 ]
+```swift
+[ 10, 0, 3, 9, 2, 14, 8, 27, 1, 5, 8, -1, 26 ]
+```
 
-First, we pick the pivot element. That is `8` because it's in the middle of the array. Now we split the array into the less, equal, and greater parts:
+먼저, `8`을 pivot을 선택한다. 배열의 중간에 있는 값이 `8`이기 때문. 다음에는 배열을 less, equal, greater 로 나누겠다 :
 
-	less:    [ 0, 3, 2, 1, 5, -1 ]
-	equal:   [ 8, 8 ]
-	greater: [ 10, 9, 14, 27, 26 ]
+```swift
+less:    [ 0, 3, 2, 1, 5, -1 ]
+equal:   [ 8, 8 ]
+greater: [ 10, 9, 14, 27, 26 ]
+```
 
-This is a good split because `less` and `greater` roughly contain the same number of elements. So we've picked a good pivot that chopped the array right down the middle.
+`less`와 `greater`이 동일한 수의 원소를 갖고 있으므로, 잘 나누어졌다. 또한 배열을 반으로 가르는 좋은 pivot을 골랐다.
 
-Note that the `less` and `greater` arrays aren't sorted yet, so we call `quicksort()` again to sort those two subarrays. That does the exact same thing: pick a pivot and split the subarray into three even smaller parts.
+`less`와 `greater`는 아직 정렬되지 않았다. 그래서 `quicksort()`를 다시 호출하여 두 하위배열(subarray)을 정렬하겠다. 이번에 호출된 quicksort()도 앞에서 한 것과 똑같은 일을 한다 : pivot을 고르고 하위 배열을 다시 세 개의 더 작은 배열로 나눈다.
 
-Let's just take a look at the `less` array:
+`less` 배열로 이 과정을 살펴보겠다:
 
-	[ 0, 3, 2, 1, 5, -1 ]
+```swift
+[ 0, 3, 2, 1, 5, -1 ]
+```
 
-The pivot element is the one in the middle, `1`. (You could also have picked `2`, it doesn't matter.) Again, we create three subarrays around the pivot:
+여기서 pivot은 중간에 있는 값 중 `1`로 선택하겠다( `2`로 해도 상관없다. )  다시 pivot 주변에서 3개의 하위배열을 만들어낸다 :
 
-	less:    [ 0, -1 ]
-	equal:   [ 1 ]
-	greater: [ 3, 2, 5 ]
+```swift
+less:    [ 0, -1 ]
+equal:   [ 1 ]
+greater: [ 3, 2, 5 ]
+```
 
-We're not done yet and `quicksort()` again is called recursively on the `less` and `greater` arrays. Let's look at `less` again:
+아직 끝나지 않았다. 재귀적으로 `less`와 `greater` 배열에서 `quicksort()`가 다시 호출된다.  `less`를 다시 살펴보겠다 :
 
-	[ 0, -1 ]
+```swift
+[ 0, -1 ]
+```
 
-As pivot we pick `-1`. Now the subarrays are:
+pivot으로 `-1`을 선택하겠다. 이제 하위 배열(subarray)은 아래와 같다 :
 
-	less:    [ ]
-	equal:   [ -1 ]
-	greater: [ 0 ]
+```swift
+less:    [ ]
+equal:   [ -1 ]
+greater: [ 0 ]
+```
 
-The `less` array is empty because there was no value smaller than `-1`; the other arrays contain a single element each. That means we're done at this level of the recursion, and we go back up to sort the previous `greater` array.
+`-1`보다 작은 값이 없기 때문에 `less`배열은 비었다. 다른 배열들은 하나씩 값이 들어있다. 이것은 재귀가 이번 단계에서 끝났고, 이전의 `greater`배열을 정렬하기 위해 다시 되돌아간다는 것을 의미한다.
 
-That `greater` array was:
+`greater`배열이다 :
 
-	[ 3, 2, 5 ]
+```swift
+[ 3, 2, 5 ]
+```
 
-This works just the same way as before: we pick the middle element `2` as the pivot and fill up the subarrays:
+이번에도 전과 같이 작동한다 : 중간값인 `2` 를 피벗으로 선택하고 `subarray`배열을  채워 넣는다.
 
-	less:    [ ]
-	equal:   [ 2 ]
-	greater: [ 3, 5 ]
+```swift
+less:    [ ]
+equal:   [ 2 ]
+greater: [ 3, 5 ]
+```
 
 Note that here it would have been better to pick `3` as the pivot -- we would have been done sooner. But now we have to recurse into the `greater` array again to make sure it is sorted. This is why picking a good pivot is important. When you pick too many "bad" pivots, quicksort actually becomes really slow. More on that below.
 
 When we partition the `greater` subarray, we find:
 
-	less:    [ 3 ]
-	equal:   [ 5 ]
-	greater: [ ]
+```swift
+less:    [ 3 ]
+equal:   [ 5 ]
+greater: [ ]
+```
 
 And now we're done at this level of the recursion because we can't split up the arrays any further.
 
@@ -96,7 +114,9 @@ This process repeats until all the subarrays have been sorted. In a picture:
 
 Now if you read the colored boxes from left to right, you get the sorted array:
 
-	[ -1, 0, 1, 2, 3, 5, 8, 8, 9, 10, 14, 26, 27 ]
+```swift
+[ -1, 0, 1, 2, 3, 5, 8, 8, 9, 10, 14, 26, 27 ]
+```
 
 This shows that `8` was a good initial pivot because it appears in the middle of the sorted array too.
 
@@ -108,19 +128,25 @@ Dividing the array around the pivot is called *partitioning* and there are a few
 
 If the array is,
 
-	[ 10, 0, 3, 9, 2, 14, 8, 27, 1, 5, 8, -1, 26 ]
+```swift
+[ 10, 0, 3, 9, 2, 14, 8, 27, 1, 5, 8, -1, 26 ]
+```
 
 and we choose the middle element `8` as a pivot then after partitioning the array will look like this:
 
-	[ 0, 3, 2, 1, 5, -1, 8, 8, 10, 9, 14, 27, 26 ]
-	  -----------------        -----------------
-	  all elements < 8         all elements > 8
+```swift
+[ 0, 3, 2, 1, 5, -1, 8, 8, 10, 9, 14, 27, 26 ]
+  -----------------        -----------------
+  all elements < 8         all elements > 8
+```
 
 The key thing to realize is that after partitioning the pivot element is in its final sorted place already. The rest of the numbers are not sorted yet, they are simply partitioned around the pivot value. Quicksort partitions the array many times over, until all the values are in their final places.
 
 There is no guarantee that partitioning keeps the elements in the same relative order, so after partitioning around pivot `8` you could also end up with something like this:
 
-	[ 3, 0, 5, 2, -1, 1, 8, 8, 14, 26, 10, 27, 9 ]
+```swift
+[ 3, 0, 5, 2, -1, 1, 8, 8, 14, 26, 10, 27, 9 ]
+```
 
 The only guarantee is that to the left of the pivot are all the smaller elements and to the right are all the larger elements. Because partitioning can change the original order of equal elements, quicksort does not produce a "stable" sort (unlike [merge sort](../Merge%20Sort/), for example). Most of the time that's not a big deal.
 
@@ -163,8 +189,10 @@ Previously we used the middle array element as the pivot but it's important to r
 
 After partitioning, the array looks like this:
 
-	[ 0, 3, 2, 1, 5, 8, -1, 8, 9, 10, 14, 26, 27 ]
-	                        *
+```swift
+[ 0, 3, 2, 1, 5, 8, -1, 8, 9, 10, 14, 26, 27 ]
+                        *
+```
 
 The variable `p` contains the return value of the call to `partitionLomuto()` and is 7. This is the index of the pivot element in the new array (marked with a star).
 
@@ -181,8 +209,10 @@ So how does the Lomuto algorithm actually work? The magic happens in the `for` l
 
 In ASCII art the array is divided up like this:
 
-	[ values <= pivot | values > pivot | not looked at yet | pivot ]
-	  low           i   i+1        j-1   j          high-1   high
+```swift
+[ values <= pivot | values > pivot | not looked at yet | pivot ]
+  low           i   i+1        j-1   j          high-1   high
+```
 
 The loop looks at each element from `low` to `high-1` in turn. If the value of the current element is less than or equal to the pivot, it is moved into the first region using a swap.
 
@@ -192,56 +222,70 @@ After the loop is over, the pivot is still the last element in the array. So we 
 
 Let's step through the example. The array we're starting with is:
 
-	[| 10, 0, 3, 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
-	   low                                       high
-	   i
-	   j
+```swift
+[| 10, 0, 3, 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
+   low                                       high
+   i
+   j
+```
 
 Initially, the "not looked at" region stretches from index 0 to 11. The pivot is at index 12. The "values <= pivot" and "values > pivot" regions are empty, because we haven't looked at any values yet.
 
 Look at the first value, `10`. Is this smaller than the pivot? No, skip to the next element.	  
 
-	[| 10 | 0, 3, 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
-	   low                                        high
-	   i
-	       j
+```swift
+[| 10 | 0, 3, 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
+   low                                        high
+   i
+       j
+```
 
 Now the "not looked at" region goes from index 1 to 11, the "values > pivot" region contains the number `10`, and "values <= pivot" is still empty.
 
 Look at the second value, `0`. Is this smaller than the pivot? Yes, so swap `10` with `0` and move `i` ahead by one.
 
-	[ 0 | 10 | 3, 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
-	  low                                         high
-	      i
-	           j
+```swift
+[ 0 | 10 | 3, 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
+  low                                         high
+      i
+           j
+```
 
 Now "not looked at" goes from index 2 to 11, "values > pivot" still contains `10`, and "values <= pivot" contains the number `0`.
 
 Look at the third value, `3`. This is smaller than the pivot, so swap it with `10` to get:
 
-	[ 0, 3 | 10 | 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
-	  low                                         high
-	         i
-	             j
+```swift
+[ 0, 3 | 10 | 9, 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
+  low                                         high
+         i
+             j
+```
 
 The "values <= pivot" region is now `[ 0, 3 ]`. Let's do one more... `9` is greater than the pivot, so simply skip ahead:
 
-	[ 0, 3 | 10, 9 | 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
-	  low                                         high
-	         i
-	                 j
+```swift
+[ 0, 3 | 10, 9 | 2, 14, 26, 27, 1, 5, 8, -1 | 8 ]
+  low                                         high
+         i
+                 j
+```
 
 Now the "values > pivot" region contains `[ 10, 9 ]`. If we keep going this way, then eventually we end up with:
 
-	[ 0, 3, 2, 1, 5, 8, -1 | 27, 9, 10, 14, 26 | 8 ]
-	  low                                        high
-	                         i                   j
+```swift
+[ 0, 3, 2, 1, 5, 8, -1 | 27, 9, 10, 14, 26 | 8 ]
+  low                                        high
+                         i                   j
+```
 
 The final thing to do is to put the pivot into place by swapping `a[i]` with `a[high]`:
 
-	[ 0, 3, 2, 1, 5, 8, -1 | 8 | 9, 10, 14, 26, 27 ]
-	  low                                       high
-	                         i                  j
+```swift
+[ 0, 3, 2, 1, 5, 8, -1 | 8 | 9, 10, 14, 26, 27 ]
+  low                                       high
+                         i                  j
+```
 
 And we return `i`, the index of the pivot element.
 
@@ -307,7 +351,9 @@ Note that with Hoare's scheme, the pivot is always expected to be the *first* el
 
 The result is:
 
-	[ -1, 0, 3, 8, 2, 5, 1, 27, 10, 14, 9, 8, 26 ]
+```swift
+[ -1, 0, 3, 8, 2, 5, 1, 27, 10, 14, 9, 8, 26 ]
+```
 
 Note that this time the pivot isn't in the middle at all. Unlike with Lomuto's scheme, the return value is not necessarily the index of the pivot element in the new array.
 
@@ -335,25 +381,33 @@ Lomuto's partitioning scheme always chooses the last array element for the pivot
 
 Here is what happens when you pick a bad value for the pivot. Let's say the array is,
 
-	[ 7, 6, 5, 4, 3, 2, 1 ]
+```swift
+[ 7, 6, 5, 4, 3, 2, 1 ]
+```
 
 and we're using Lomuto's scheme. The pivot is the last element, `1`. After pivoting, we have the following arrays:
 
-	   less than pivot: [ ]
-	    equal to pivot: [ 1 ]
-	greater than pivot: [ 7, 6, 5, 4, 3, 2 ]
+```swift
+   less than pivot: [ ]
+    equal to pivot: [ 1 ]
+greater than pivot: [ 7, 6, 5, 4, 3, 2 ]
+```
 
 Now recursively partition the "greater than" subarray and get:
 
-	   less than pivot: [ ]
-	    equal to pivot: [ 2 ]
-	greater than pivot: [ 7, 6, 5, 4, 3 ]
+```swift
+   less than pivot: [ ]
+    equal to pivot: [ 2 ]
+greater than pivot: [ 7, 6, 5, 4, 3 ]
+```
 
 And again:
 
-	   less than pivot: [ ]
-	    equal to pivot: [ 3 ]
-	greater than pivot: [ 7, 6, 5, 4 ]
+```swift
+   less than pivot: [ ]
+    equal to pivot: [ 3 ]
+greater than pivot: [ 7, 6, 5, 4 ]
+```
 
 And so on...
 
@@ -361,13 +415,17 @@ That's no good, because this pretty much reduces quicksort to the much slower in
 
 The optimal pivot for this example would have been `4`, so we'd get:
 
-	   less than pivot: [ 3, 2, 1 ]
-	    equal to pivot: [ 4 ]
-	greater than pivot: [ 7, 6, 5 ]
+```swift
+   less than pivot: [ 3, 2, 1 ]
+    equal to pivot: [ 4 ]
+greater than pivot: [ 7, 6, 5 ]
+```
 
 You might think this means we should always choose the middle element rather than the first or the last, but imagine what happens in the following situation:
 
-	[ 7, 6, 5, 1, 4, 3, 2 ]
+```swift
+[ 7, 6, 5, 1, 4, 3, 2 ]
+```
 
 Now the middle element is `1` and that gives the same lousy results as in the previous example.
 
