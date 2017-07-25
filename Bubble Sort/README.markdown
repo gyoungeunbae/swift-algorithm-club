@@ -1,14 +1,24 @@
-# Bubble Sort
+# 버블 정렬
 
-Bubble sort is a sorting algorithm that is implemented by starting in the beginning of the array and swapping the first two elements only if the first element is greater than the second element. This comparison is then moved onto the next pair and so on and so forth. This is done until the array is completely sorted. The smaller items slowly “bubble” up to the beginning of the array.
+ 버블 정렬은 배열의 시작부분에서부터 첫번째와 두번째 원소의 크기를 비교하여 첫번째 원소가 더 클때만 원소의 자리를 바꾸도록 구현된 정렬알고리즘 이다. 순서에 따라 처음부터 마지막까지 원소 쌍 사이의 비교를 수행한다. 그리고 배열이 완전히 정렬될 때까지 계속한다. 더 작은 원소들은 천천히 배열의 시작부분쪽으로  "거품"처럼 갑니다.
 
-##### Runtime:
-- Average: O(N^2)
-- Worst: O(N^2)
+##### 시간복잡도:
+- 평균: O(N^2)
+- 최악: O(N^2)
 
-##### Memory:
+##### 공간복잡도:
 - O(1)
 
-### Implementation:
+### 구현:
 
-The implementation will not be shown as the average and worst runtimes show that this is a very inefficient algorithm. However, having a grasp of the concept will help you understand the basics of simple sorting algorithms.
+이 알고리즘에 대한 구현은 여기에 넣지 않겠다. 이것은 너무 비효율적인 알고리즘이기 때문이다. 그러나, 이 개념을 알면 간단한 정렬 알고리즘의 개념을 이해하는데 도움이 될 것이다.
+
+
+
+
+
+
+
+
+
+*Translated from English into Korean by GyoungEun Bae.*
