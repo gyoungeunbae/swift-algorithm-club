@@ -179,6 +179,6 @@ tree.search("bubbly")   // nil
 그런데 때로는 * forest *라는 알고리즘을 보게됩니다. 이것은  별도의 트리 객체 모음에 주어진 이름입니다. 이에 대한 예는 [union-find] (../ Union-Find /)를 참조하십시오.
 
 *Written for Swift Algorithm Club by Matthijs Hollemans*
- -  [*Translated  by Derrick](superbderrick.github.io)
+ -  [*Translated  by Derrick](https://superbderrick.github.io/)
 
 
